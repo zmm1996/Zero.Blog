@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Zero.Core.Entities
 {
-    public partial class Sys_Menu
+    public partial class Sys_Menu:BaseEntity,IBaseEntity
     {
-        public System.Guid Id { get; set; }
+      
         public string Name { get; set; }
         public string Url { get; set; }
         public string Alias { get; set; }
@@ -22,11 +22,5 @@ namespace Zero.Core.Entities
         public Nullable<int> HideInMenu { get; set; }
         public Nullable<int> NotCache { get; set; }
         public string BeforeCloseFun { get; set; }
-        public Nullable<System.DateTime> CreatedTime { get; set; }
-        public Nullable<System.Guid> CreatedByUserId { get; set; }
-        public string CreatedByUserName { get; set; }
-        public Nullable<System.DateTime> ModifiedTime { get; set; }
-        public Nullable<System.Guid> ModifiedByUserId { get; set; }
-        public string ModifiedByUserName { get; set; }
     }
 }

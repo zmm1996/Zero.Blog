@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Zero.Core\Zero.Core.csproj" />
     <ProjectReference Include="..\Zero.Infrastructure\Zero.Infrastructure.csproj" />
+    <ProjectReference Include="..\Zero.Util\Zero.Util.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="http://json.schemastore.org/bukkit-plugin" /></VisualStudio></ProjectExtensions>

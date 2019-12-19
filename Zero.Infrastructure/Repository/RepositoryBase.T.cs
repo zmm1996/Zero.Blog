@@ -18,7 +18,7 @@ namespace Zero.Infrastructure.Repository
 
         public async Task<TEntity> FindEntity(object key)
         {
-          return  await _myContext.FindAsync<TEntity>(key);
+            return await _myContext.FindAsync<TEntity>(key);
         }
 
         int IRepositoryBase<TEntity>.ExecuteBySql(string strSql)
@@ -26,9 +26,9 @@ namespace Zero.Infrastructure.Repository
             throw new NotImplementedException();
         }
 
-        int IRepositoryBase<TEntity>.Insert(TEntity entity)
+        public void Insert(TEntity entity)
         {
-            throw new NotImplementedException();
+            _myContext.Add(entity);
         }
 
         int IRepositoryBase<TEntity>.Insert(List<TEntity> entities)
@@ -46,7 +46,7 @@ namespace Zero.Infrastructure.Repository
             throw new NotImplementedException();
         }
 
-        
+
 
 
 

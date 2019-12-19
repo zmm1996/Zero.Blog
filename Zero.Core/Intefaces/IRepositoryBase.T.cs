@@ -9,7 +9,7 @@ namespace Zero.Core.Intefaces
     {
 
         int ExecuteBySql(string strSql);
-        int Insert(TEntity entity);
+        void Insert(TEntity entity);
         int Insert(List<TEntity> entities);
         int Update(TEntity entity);
         int Update(List<TEntity> entities);

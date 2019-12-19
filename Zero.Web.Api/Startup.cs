@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
+using Zero.Core.Intefaces;
 using Zero.Core.Intefaces.Sys;
 using Zero.Infrastructure.DataBase;
 using Zero.Infrastructure.Repository.Sys;
@@ -99,6 +100,7 @@ namespace Zero.Web.Api
             });
 
             services.AddScoped<ISysUserRepo, SysUserRepo>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         }
 
