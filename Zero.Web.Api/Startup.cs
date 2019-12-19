@@ -28,7 +28,7 @@ namespace Zero.Web.Api
         }
         public void ConfigureServices(IServiceCollection services)
         {
-            //跨域
+            //跨域1
             services.AddCors(o =>
             {
                 o.AddPolicy("any", builder =>
