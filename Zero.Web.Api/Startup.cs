@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +17,9 @@ using Zero.Core.Intefaces;
 using Zero.Core.Intefaces.Sys;
 using Zero.Infrastructure.DataBase;
 using Zero.Infrastructure.Repository.Sys;
+using Zero.Web.Api.Auth;
+using Zero.Web.Api.Extensions;
+using Zero.Web.Api.Filters;
 
 namespace Zero.Web.Api
 {
@@ -49,8 +53,25 @@ namespace Zero.Web.Api
                 options.UseSqlServer(connStr);
             });
 
+            //身份认证
+            services.AddAuthentication();
+
+
+            //注入配置文件
+            var appSettingSection = _configuration.GetSection("AppSettings");
+            services.Configure<AppAuthenticationSettings>(appSettingSection);
+
+            //JWT认证
+           var appSettings= appSettingSection.Get<AppAuthenticationSettings>();//将配置文件转为实体自己用
+            services.AddJwtBearerAuthentication(appSettings);
+
+
+            services.AddAutoMapper(typeof(MappingProfile));//使用Automapper映射
+
             services.AddMvc(options =>
             {
+                //全局过滤器
+                //options.Filters.Add<CustomAuthorization>();
 
             }).AddJsonOptions(options =>
             {
@@ -113,7 +134,7 @@ namespace Zero.Web.Api
             }
             //
             app.UseStaticFiles();
-            //认证
+            //身份授权认证
             app.UseAuthentication();
 
             //跨域

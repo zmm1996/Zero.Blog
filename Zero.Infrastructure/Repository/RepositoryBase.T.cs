@@ -16,9 +16,9 @@ namespace Zero.Infrastructure.Repository
             this._myContext = myContext;
         }
 
-        public async Task<TEntity> FindEntity(object key)
+        public  TEntity FindEntity(object key)
         {
-            return await _myContext.FindAsync<TEntity>(key);
+            return  _myContext.Find<TEntity>(key);
         }
 
         int IRepositoryBase<TEntity>.ExecuteBySql(string strSql)

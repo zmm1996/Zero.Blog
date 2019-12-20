@@ -13,6 +13,6 @@ namespace Zero.Core.Intefaces
         int Insert(List<TEntity> entities);
         int Update(TEntity entity);
         int Update(List<TEntity> entities);
-        Task<TEntity> FindEntity(object key);
+        TEntity FindEntity(object key);
     }
 }
