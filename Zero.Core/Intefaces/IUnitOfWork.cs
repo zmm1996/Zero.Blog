@@ -7,6 +7,6 @@ namespace Zero.Core.Intefaces
 {
    public interface IUnitOfWork
     {
-        Task<bool> SaveAsync();
+       bool Save();
     }
 }

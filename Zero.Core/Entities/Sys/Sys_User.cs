@@ -17,4 +17,6 @@ namespace Zero.Core.Entities
         public string Description { get; set; }
 
     }
+
+    
 }

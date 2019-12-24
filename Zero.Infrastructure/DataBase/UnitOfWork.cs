@@ -20,9 +20,9 @@ namespace Zero.Infrastructure.DataBase
         /// 保存到数据库(工作单元模式)
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> SaveAsync()
+        public bool Save()
         {
-            return await _myContext.SaveChangesAsync() > 0;
+            return  _myContext.SaveChanges() > 0;
         }
     }
 }

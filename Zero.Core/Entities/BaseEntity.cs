@@ -5,7 +5,7 @@ using Zero.Core.Intefaces;
 
 namespace Zero.Core.Entities
 {
-    public class BaseEntity : IBaseEntity
+    public class BaseEntity :EntityCreateOrUpdate,IBaseEntity
     {
         public Guid Id { get; set ; }
         public Nullable<System.DateTime> CreatedTime { get; set; }

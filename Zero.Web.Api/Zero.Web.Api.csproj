@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Extensions\AuthContext\**" />
+    <Content Remove="Extensions\AuthContext\**" />
+    <EmbeddedResource Remove="Extensions\AuthContext\**" />
+    <None Remove="Extensions\AuthContext\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Areas\Areas\Data\" />
     <Folder Include="Areas\Areas\Models\" />
     <Folder Include="Areas\Areas\Views\" />

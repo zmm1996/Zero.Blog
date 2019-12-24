@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,9 +18,11 @@ using Zero.Core.Intefaces;
 using Zero.Core.Intefaces.Sys;
 using Zero.Infrastructure.DataBase;
 using Zero.Infrastructure.Repository.Sys;
+using Zero.Infrastructure.Resources.FluentValidation.Rabc;
+using Zero.Infrastructure.Resources.ViewModels;
 using Zero.Web.Api.Auth;
 using Zero.Web.Api.Extensions;
-using Zero.Web.Api.Filters;
+using Zero.Web.Util.Extensions.AuthContext;
 
 namespace Zero.Web.Api
 {
@@ -45,6 +48,8 @@ namespace Zero.Web.Api
                 });
             });
 
+            services.AddHttpContextAccessor();
+
             //获取连接字符串
             string connStr = _configuration["ConnectionStrings:DefaultConnection"];
             // _configuration.GetConnectionString("DefaultConnection");
@@ -62,7 +67,7 @@ namespace Zero.Web.Api
             services.Configure<AppAuthenticationSettings>(appSettingSection);
 
             //JWT认证
-           var appSettings= appSettingSection.Get<AppAuthenticationSettings>();//将配置文件转为实体自己用
+            var appSettings = appSettingSection.Get<AppAuthenticationSettings>();//将配置文件转为实体自己用
             services.AddJwtBearerAuthentication(appSettings);
 
 
@@ -77,7 +82,7 @@ namespace Zero.Web.Api
             {
                 //返回json格式
                 options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            });
+            }).AddFluentValidation();
 
             //推荐加上
             services.AddHsts(option =>
@@ -118,9 +123,23 @@ namespace Zero.Web.Api
                 // 启用xml注释. 该方法第二个参数启用控制器的注释，默认为false.
                 options.IncludeXmlComments(xmlPath, true);
 
+                //这里是给Swagger添加验证的部分
+                options.AddSecurityDefinition("Bearer", new ApiKeyScheme { In = "header", Description = "请输入带有Bearer的Token", Name = "Authorization", Type = "apiKey" });
+                options.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
+                       {
+                           "Bearer",
+                           Enumerable.Empty<string>()
+                       }
+                    });
             });
 
+            //fluentvalidator验证
+
+            services.AddTransient<IValidator<SysRoleCreateOrUpdateViewModel>, RoleValidator>();
+
+
             services.AddScoped<ISysUserRepo, SysUserRepo>();
+            services.AddScoped<ISysRoleRepo, SysRoleRepo>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         }
@@ -132,15 +151,22 @@ namespace Zero.Web.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseStatusCodePages();
+            }
+            //跨域
+            app.UseCors("any");
+
             //
             app.UseStaticFiles();
             //身份授权认证
             app.UseAuthentication();
-
-            //跨域
-            app.UseCors("any");
-
             app.UseHttpsRedirection();
+
+           var httpContextAccessor= app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
+
+            AuthContextService.Configure(httpContextAccessor);
 
             app.UseMvc(routes =>
             {
@@ -150,7 +176,7 @@ namespace Zero.Web.Api
 
                         );
             });
-            
+
 
 
             app.UseSwagger();
@@ -159,7 +185,7 @@ namespace Zero.Web.Api
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "CoreWebApi");
                 options.RoutePrefix = string.Empty;
             });
-            
+
             //app.Run(async (context) =>
             //{
             //    await context.Response.WriteAsync("Hello World!");

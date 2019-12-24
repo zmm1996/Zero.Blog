@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Zero.Core.Intefaces.Sys;
+using Zero.Util.Helpers;
 using Zero.Web.Api.Auth;
 
 namespace Zero.Web.Api.Controllers
@@ -14,20 +16,33 @@ namespace Zero.Web.Api.Controllers
     public class OauthController : ControllerBase
     {
         private readonly AppAuthenticationSettings _appSettings;
+        private readonly ISysUserRepo _sysUserRepo;
 
-        public OauthController(IOptions<AppAuthenticationSettings> appSettings)
+        public OauthController(IOptions<AppAuthenticationSettings> appSettings,
+            ISysUserRepo sysUserRepo
+            )
         {
             this._appSettings = appSettings.Value;
+            this._sysUserRepo = sysUserRepo;
         }
         [HttpGet]
         public IActionResult Auth(string username, string password)
         {
+
+            var user = _sysUserRepo.FindEntity(x=>x.LoginName==username&&x.Password==password);
+            if(user == null)
+            {
+                return BadRequest();
+            }
             var claimsIdentity = new ClaimsIdentity(new Claim[]
                 {
+                    
                     new Claim(ClaimTypes.Name, username),
-                    new Claim("guid","8EB66204-8023-C1EB-6162-39F22EF35F5F"),
+                    new Claim("id",user.Id.ToString()),
                     new Claim("avatar",""),
-                    new Claim("displayName","超级管理员")
+                    new Claim("LoginName",user.LoginName),
+                    new Claim("displayName",user.DisplayName),
+                    new Claim("userType",((int)user.UserType).ToString())
 
                 });
             var token = JwtBearerAuthenticationExtension.GetJwtAccessToken(_appSettings, claimsIdentity);
