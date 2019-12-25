@@ -2,6 +2,7 @@
 using System;
 using System.Security.Claims;
 using Zero.Util.Enum;
+using Zero.Util.Web;
 using Zero.Web.Util.Extensions.AuthContext;
 
 namespace Zero.Web.Util.Extensions.AuthContext
@@ -32,7 +33,8 @@ namespace Zero.Web.Util.Extensions.AuthContext
                     DisplayName = Current.User.FindFirstValue("displayName"),
                     Avator = Current.User.FindFirstValue("avatar"),
                     Guid = new Guid(Current.User.FindFirstValue("id")),
-                    UserType =(UserType) Convert.ToInt32(Current.User.FindFirstValue("userType"))
+                    UserType = (UserType)Convert.ToInt32(Current.User.FindFirstValue("userType")),
+                    IpAddress = Ip
                 };
 
                 return user;
@@ -62,6 +64,14 @@ namespace Zero.Web.Util.Extensions.AuthContext
             }
         }
 
+
+        public static string Ip
+        {
+            get
+            {
+                return Current.GetClientUserIp();
+            }
+        }
 
 
 

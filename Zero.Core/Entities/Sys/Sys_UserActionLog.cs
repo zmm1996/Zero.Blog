@@ -12,7 +12,7 @@ namespace Zero.Core.Entities
         public string IP { get; set; }
         public Nullable<System.DateTime> ActionTime { get; set; }
         public Nullable<System.Guid> ActionUserId { get; set; }
-        public Nullable<System.Guid> ActionUserName { get; set; }
+        public string ActionUserName { get; set; }
         public string Description { get; set; }
         public Nullable<int> ActionType { get; set; }
         public Nullable<System.Guid> ModelId { get; set; }

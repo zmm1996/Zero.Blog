@@ -22,6 +22,7 @@ using Zero.Infrastructure.Resources.FluentValidation.Rabc;
 using Zero.Infrastructure.Resources.ViewModels;
 using Zero.Web.Api.Auth;
 using Zero.Web.Api.Extensions;
+using Zero.Web.Api.Filters;
 using Zero.Web.Util.Extensions.AuthContext;
 
 namespace Zero.Web.Api
@@ -76,7 +77,9 @@ namespace Zero.Web.Api
             services.AddMvc(options =>
             {
                 //全局过滤器
-                //options.Filters.Add<CustomAuthorization>();
+                //options.Filters.Add<CustomAuthorization>();xs
+                //modelstate验证
+                options.Filters.Add<ValidateModelAttribute>();
 
             }).AddJsonOptions(options =>
             {
@@ -163,6 +166,8 @@ namespace Zero.Web.Api
             //身份授权认证
             app.UseAuthentication();
             app.UseHttpsRedirection();
+
+            app.UseExceptionMiddleware();
 
            var httpContextAccessor= app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
 

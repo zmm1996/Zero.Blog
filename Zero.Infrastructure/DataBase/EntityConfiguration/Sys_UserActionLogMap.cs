@@ -19,7 +19,8 @@ namespace Zero.Infrastructure.DataBase
 
             builder.Property(t => t.Action)
                 .HasMaxLength(128);
-
+            builder.Property(t => t.ActionUserName)
+               .HasMaxLength(128);
             builder.Property(t => t.ApiUrl)
                 .HasMaxLength(128);
 

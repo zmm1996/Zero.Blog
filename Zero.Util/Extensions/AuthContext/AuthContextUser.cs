@@ -32,5 +32,10 @@ namespace Zero.Web.Util.Extensions.AuthContext
         /// 头像地址
         /// </summary>
         public string Avator { get; set; }
+
+        /// <summary>
+        /// Ip
+        /// </summary>
+        public string IpAddress { get; set; }
     }
 }

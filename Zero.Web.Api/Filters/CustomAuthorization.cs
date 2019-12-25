@@ -24,7 +24,6 @@ namespace Zero.Web.Api.Filters
         }
         public void OnAuthorization(
             AuthorizationFilterContext context
-          
             )
         {
             ContentResult contentResult = new ContentResult

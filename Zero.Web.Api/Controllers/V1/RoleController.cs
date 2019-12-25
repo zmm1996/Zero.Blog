@@ -10,6 +10,7 @@ using Zero.Core.RequestPayloads.Rbac;
 using Zero.Infrastructure.Resources.ViewModels;
 using Zero.Util.Helpers;
 using Zero.Web.Api.Extensions;
+using Zero.Web.Api.Filters;
 using Zero.Web.Util.Extensions.AuthContext;
 
 namespace Zero.Web.Api.Controllers.V1
@@ -34,6 +35,7 @@ namespace Zero.Web.Api.Controllers.V1
         }
 
         [HttpGet(Name ="GetRoles")]
+        [ActionLog("角色集合查询")]
         public IActionResult Get()//RoleRequestPayload payload)
         {
            var u= AuthContextService.CurrentUser;
@@ -46,6 +48,7 @@ namespace Zero.Web.Api.Controllers.V1
         }
 
         [HttpGet("{id}",Name ="GetRole")]
+        [ActionLog("角色查询")]
         public IActionResult Get(Guid id)
         {
             var response = ResponseModelFactory.CreateResultInstance;
@@ -57,13 +60,15 @@ namespace Zero.Web.Api.Controllers.V1
 
         [HttpPost]
         [ProducesResponseType(200)]
+        [ActionLog("创建角色")]
         public IActionResult Post([FromBody]SysRoleCreateOrUpdateViewModel viewModel)
         {
            
             var response = ResponseModelFactory.CreateInstance;
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                response.SetFailed("验证失败");
+                return Ok(response);
             }
             if(!AuthContextService.IsAdministrator)
             {
@@ -94,12 +99,14 @@ namespace Zero.Web.Api.Controllers.V1
 
 
         [HttpPut("{id}",Name ="UpdateRole")]
+        [ActionLog("修改角色")]
         public IActionResult Update(Guid id,[FromBody]SysRoleCreateOrUpdateViewModel viewModel)
         {
            var response= ResponseModelFactory.CreateInstance;
             if(!ModelState.IsValid)
             {
-                return BadRequest();
+                response.SetFailed("验证失败");
+                return Ok(response);
             }
 
             var role= _sysRoleRepo.FindEntity(id);
@@ -125,6 +132,7 @@ namespace Zero.Web.Api.Controllers.V1
         }
         
         [HttpDelete("{id}",Name ="DeleteRole")]
+        [ActionLog("删除角色")]
         public IActionResult Delete(Guid id)
         {
            var response= ResponseModelFactory.CreateInstance;

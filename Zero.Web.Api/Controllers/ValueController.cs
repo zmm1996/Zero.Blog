@@ -39,6 +39,7 @@ namespace Zero.Web.Api.Controllers
         public  ActionResult Index()
         {
 
+            throw new Exception("asajkjk ");
             var result=  _sysUserRepo.FindEntity(Guid.Parse("8EB66204-8023-C1EB-6162-39F22EF35F5F"));
             //Sys_User sys_User = new Sys_User
             //{
