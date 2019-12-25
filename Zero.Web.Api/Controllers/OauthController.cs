@@ -37,7 +37,7 @@ namespace Zero.Web.Api.Controllers
             var claimsIdentity = new ClaimsIdentity(new Claim[]
                 {
                     
-                    new Claim(ClaimTypes.Name, username),
+                    new Claim(ClaimTypes.NameIdentifier, username),
                     new Claim("id",user.Id.ToString()),
                     new Claim("avatar",""),
                     new Claim("LoginName",user.LoginName),

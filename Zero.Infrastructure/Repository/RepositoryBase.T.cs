@@ -82,9 +82,13 @@ namespace Zero.Infrastructure.Repository
             return _myContext.Set<TEntity>().Where(expression).AsNoTracking();
         }
 
-        int IRepositoryBase<TEntity>.ExecuteBySql(string strSql)
+         public int ExecuteBySql(string strSql)
         {
-            throw new NotImplementedException();
+           return _myContext.Database.ExecuteSqlCommand(strSql);
+        }
+        public int ExecuteBySql(string strSql,DbParameter parameter)
+        {
+            return _myContext.Database.ExecuteSqlCommand(strSql,parameter);
         }
 
         public IEnumerable<TEntity> FindList()

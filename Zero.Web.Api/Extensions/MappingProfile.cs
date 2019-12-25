@@ -18,6 +18,9 @@ namespace Zero.Web.Api.Extensions
 
             CreateMap<SysRoleCreateOrUpdateViewModel, Sys_Role>();
             CreateMap<Sys_Role, SysRoleCreateOrUpdateViewModel>();
+
+            //用户
+            CreateMap<SysUserCreateOrUpdateViewModel, Sys_User>();
         }
     }
 }

@@ -15,16 +15,16 @@ using Zero.Web.Util.Extensions.AuthContext;
 
 namespace Zero.Web.Api.Controllers.V1
 {
-    [Route("api/v1/rabc/[controller]/[action]")]
+    [Route("api/v1/rabc/sysrole")]
     [ApiController]
     [Authorize]
-    public class RoleController : ControllerBase
+    public class SysRoleController : ControllerBase
     {
         private readonly ISysRoleRepo _sysRoleRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public RoleController(ISysRoleRepo sysRoleRepo,
+        public SysRoleController(ISysRoleRepo sysRoleRepo,
             IUnitOfWork unitOfWork,
             IMapper mapper
             )
@@ -38,9 +38,7 @@ namespace Zero.Web.Api.Controllers.V1
         [ActionLog("角色集合查询")]
         public IActionResult Get()//RoleRequestPayload payload)
         {
-           var u= AuthContextService.CurrentUser;
-
-            var a = AuthContextService.IsAdministrator;
+ 
             var response = ResponseModelFactory.CreateResultInstance;
             var result = _sysRoleRepo.FindList();
             response.SetData(result, result.Count());
@@ -115,7 +113,11 @@ namespace Zero.Web.Api.Controllers.V1
                 response.SetFailed("角色不存在");
                 return Ok(response);
             }
-
+            if(role.IsSuperAdministrator.Value&& !AuthContextService.IsAdministrator)
+            {
+                response.SetFailed("权限不足");
+                return Ok(response);
+            }
             _mapper.Map(viewModel,role);
             role.Update();
 

@@ -139,10 +139,13 @@ namespace Zero.Web.Api
             //fluentvalidator验证
 
             services.AddTransient<IValidator<SysRoleCreateOrUpdateViewModel>, RoleValidator>();
+            services.AddTransient<IValidator<SysUserCreateOrUpdateViewModel>, UserValidator>();
+            services.AddTransient<IValidator<UserRoleViewModel>, UserRoleValidator>();
 
-
+            //仓储
             services.AddScoped<ISysUserRepo, SysUserRepo>();
             services.AddScoped<ISysRoleRepo, SysRoleRepo>();
+            services.AddScoped<IUserRoleRepo, UserRoleRepo>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         }

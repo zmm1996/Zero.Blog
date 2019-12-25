@@ -43,10 +43,10 @@ namespace Zero.Web.Api.Filters
                 Controller = controllerName,
                 ActionTime = DateTime.Now,
                 ActionUserId = AuthContextService.CurrentUser.Guid,
-                ActionUserName = AuthContextService.CurrentUser.DisplayName,
+                ActionUserName = AuthContextService.CurrentUser.LoginName+"-"+AuthContextService.CurrentUser.DisplayName,
                 ApiUrl = uri,
                 Description = Title,
-                Id = Guid.NewGuid(),
+                Id = NumberNo.SequentialGuid(),
                 IsDeleted = (int)CommonEnum.IsDeleted.No,
                 IP = AuthContextService.CurrentUser.IpAddress
             };

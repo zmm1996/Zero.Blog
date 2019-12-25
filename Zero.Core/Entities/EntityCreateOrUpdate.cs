@@ -1,4 +1,5 @@
 ﻿using System;
+using Zero.Util.Helpers;
 using Zero.Web.Util.Extensions.AuthContext;
 
 namespace Zero.Core.Entities
@@ -8,13 +9,13 @@ namespace Zero.Core.Entities
         public void Create()
         {
             var entity = this as IBaseEntity;
-            entity.Id = Guid.NewGuid();
+            entity.Id = NumberNo.SequentialGuid();
             entity.CreatedByUserId = AuthContextService.CurrentUser.Guid;
-            entity.CreatedByUserName = AuthContextService.CurrentUser.DisplayName;
+            entity.CreatedByUserName = AuthContextService.CurrentUser.LoginName;
             entity.CreatedTime = DateTime.Now;
 
             entity.ModifiedByUserId = AuthContextService.CurrentUser.Guid;
-            entity.ModifiedByUserName = AuthContextService.CurrentUser.DisplayName;
+            entity.ModifiedByUserName = AuthContextService.CurrentUser.LoginName;
             entity.ModifiedTime = DateTime.Now;
         }
         public void Update()
@@ -22,7 +23,7 @@ namespace Zero.Core.Entities
             var entity = this as IBaseEntity;
           
             entity.ModifiedByUserId = AuthContextService.CurrentUser.Guid;
-            entity.ModifiedByUserName = AuthContextService.CurrentUser.DisplayName;
+            entity.ModifiedByUserName = AuthContextService.CurrentUser.LoginName;
             entity.ModifiedTime = DateTime.Now;
         }
 
