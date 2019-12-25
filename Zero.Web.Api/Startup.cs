@@ -22,6 +22,7 @@ using Zero.Infrastructure.Resources.FluentValidation.Rabc;
 using Zero.Infrastructure.Resources.ViewModels;
 using Zero.Web.Api.Auth;
 using Zero.Web.Api.Extensions;
+using Zero.Web.Api.Extensions.AddConfigureServices;
 using Zero.Web.Api.Filters;
 using Zero.Web.Util.Extensions.AuthContext;
 
@@ -105,6 +106,7 @@ namespace Zero.Web.Api
 
             });
 
+            //swagger
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Info()
@@ -136,17 +138,7 @@ namespace Zero.Web.Api
                     });
             });
 
-            //fluentvalidator验证
-
-            services.AddTransient<IValidator<SysRoleCreateOrUpdateViewModel>, RoleValidator>();
-            services.AddTransient<IValidator<SysUserCreateOrUpdateViewModel>, UserValidator>();
-            services.AddTransient<IValidator<UserRoleViewModel>, UserRoleValidator>();
-
-            //仓储
-            services.AddScoped<ISysUserRepo, SysUserRepo>();
-            services.AddScoped<ISysRoleRepo, SysRoleRepo>();
-            services.AddScoped<IUserRoleRepo, UserRoleRepo>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddConfigureServicesExtension();
 
         }
 

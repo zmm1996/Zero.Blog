@@ -193,6 +193,11 @@ namespace Zero.Web.Api.Controllers.V1
         #region 用户角色
 
       
+        /// <summary>
+        /// 分配角色
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPost("SaveRoles",Name = "SaveRoles")]
         [ActionLog("用户分配角色")]
         public IActionResult SaveRoles([FromBody]UserRoleViewModel viewModel)
