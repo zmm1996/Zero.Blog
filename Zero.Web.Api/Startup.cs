@@ -179,7 +179,26 @@ namespace Zero.Web.Api
 
 
 
-            app.UseSwagger();
+            app.UseSwagger(o =>
+            {
+                //路径过滤
+                o.PreSerializeFilters.Add((document, request) =>
+                {
+                    //加载所有
+                    document.Paths = document.Paths.ToDictionary(p => p.Key.ToLowerInvariant(), p => p.Value);
+
+                    //只加载api/v1的
+                    //IDictionary<string, PathItem> paths = new Dictionary<string, PathItem>();
+
+                    //foreach (var path in document.Paths)
+                    //{
+                    //    if (path.Key.StartsWith("/api/v1"))
+                    //        paths.Add(path.Key, path.Value);
+                    //}
+
+                    //document.Paths = paths;
+                });
+            });
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "CoreWebApi");
