@@ -6,6 +6,7 @@ using System.Reflection;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -60,8 +61,11 @@ namespace Zero.Web.Api
                 options.UseSqlServer(connStr);
             });
 
-            //身份认证
-            services.AddAuthentication();
+            //身份认证  AddJwtBearerAuthentication已经使用
+            // services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
+            //.AddCookie(options=> {
+            //    options.LoginPath = "http://www.baidu.com";
+            //});
 
 
             //注入配置文件
@@ -86,6 +90,7 @@ namespace Zero.Web.Api
             {
                 //返回json格式
                 options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.DateFormatString = "yyy-MM-dd HH:mm:ss";//解决返回时间带t
             }).AddFluentValidation();
 
             //推荐加上

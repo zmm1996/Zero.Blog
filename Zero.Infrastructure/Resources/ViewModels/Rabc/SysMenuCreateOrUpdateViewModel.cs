@@ -1,73 +1,73 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace Zero.Core.Entities
+namespace Zero.Infrastructure.Resources.ViewModels.Rabc
 {
-    public partial class Sys_Menu:BaseEntity,IBaseEntity
+   public class SysMenuCreateOrUpdateViewModel
     {
-      
         /// <summary>
-        /// ²Ëµ¥Ãû
+        /// èœå•å
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// urlµØÖ·
+        /// urlåœ°å€
         /// </summary>
         public string Url { get; set; }
         /// <summary>
-        /// Ò³Ãæ±ğÃû
+        /// é¡µé¢åˆ«å
         /// </summary>
         public string Alias { get; set; }
         /// <summary>
-        /// Í¼±ê
+        /// å›¾æ ‡
         /// </summary>
         public string Icon { get; set; }
         /// <summary>
-        /// ¸¸¼¶id
+        /// çˆ¶çº§id
         /// </summary>
         public Nullable<System.Guid> ParentId { get; set; }
         /// <summary>
-        /// ÉÏ¼¶²Ëµ¥Ãû
+        /// ä¸Šçº§èœå•å
         /// </summary>
         public string ParentName { get; set; }
         /// <summary>
-        /// ²ã¼¶Éî¶È
+        /// å±‚çº§æ·±åº¦
         /// </summary>
         public Nullable<int> Level { get; set; }
         /// <summary>
-        /// ÃèÊö
+        /// æè¿°
         /// </summary>
         public string Description { get; set; }
         /// <summary>
-        /// ÅÅĞò
+        /// æ’åº
         /// </summary>
         public Nullable<int> Sort { get; set; }
         /// <summary>
-        /// ÊÇ·ñ¿ÉÓÃ£¨0£º½ûÓÃ1£º¿ÉÓÃ£©
+        /// æ˜¯å¦å¯ç”¨ï¼ˆ0ï¼šç¦ç”¨1ï¼šå¯ç”¨ï¼‰
         /// </summary>
         public Nullable<int> Status { get; set; }
         /// <summary>
-        /// ÊÇ·ñÒÑÉ¾³ı
+        /// æ˜¯å¦å·²åˆ é™¤
         /// </summary>
         public Nullable<int> IsDeleted { get; set; }
         /// <summary>
-        /// ÊÇ·ñÄ¬ÈÏÂ·ÓÉ
+        /// æ˜¯å¦é»˜è®¤è·¯ç”±
         /// </summary>
         public Nullable<int> IsDefaultRouter { get; set; }
         /// <summary>
-        /// Ç°¶Ë×é¼ş£¨.vue£©
+        /// å‰ç«¯ç»„ä»¶ï¼ˆ.vueï¼‰
         /// </summary>
         public string Component { get; set; }
         /// <summary>
-        /// ÔÚ²Ëµ¥ÖĞÒş²Ø
+        /// åœ¨èœå•ä¸­éšè—
         /// </summary>
         public Nullable<int> HideInMenu { get; set; }
         /// <summary>
-        /// ²»»º´æÒ³Ãæ
+        /// ä¸ç¼“å­˜é¡µé¢
         /// </summary>
         public Nullable<int> NotCache { get; set; }
         /// <summary>
-        /// Ò³Ãæ¹Ø±ÕÇ°µÄ»Øµ÷º¯Êı
+        /// é¡µé¢å…³é—­å‰çš„å›è°ƒå‡½æ•°
         /// </summary>
         public string BeforeCloseFun { get; set; }
     }

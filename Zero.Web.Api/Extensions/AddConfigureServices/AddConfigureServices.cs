@@ -11,6 +11,7 @@ using Zero.Infrastructure.DataBase;
 using Zero.Infrastructure.Repository.Sys;
 using Zero.Infrastructure.Resources.FluentValidation.Rabc;
 using Zero.Infrastructure.Resources.ViewModels;
+using Zero.Infrastructure.Resources.ViewModels.Rabc;
 
 namespace Zero.Web.Api.Extensions.AddConfigureServices
 {
@@ -23,7 +24,7 @@ namespace Zero.Web.Api.Extensions.AddConfigureServices
             services.AddTransient<IValidator<SysRoleCreateOrUpdateViewModel>, RoleValidator>();
             services.AddTransient<IValidator<SysUserCreateOrUpdateViewModel>, UserValidator>();
             services.AddTransient<IValidator<UserRoleViewModel>, UserRoleValidator>();
-
+            services.AddTransient<IValidator<SysMenuCreateOrUpdateViewModel>, MenuValidator>();
             //仓储
             services.AddScoped<ISysUserRepo, SysUserRepo>();
             services.AddScoped<ISysRoleRepo, SysRoleRepo>();

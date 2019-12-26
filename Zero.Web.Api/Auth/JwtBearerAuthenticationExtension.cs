@@ -34,10 +34,12 @@ namespace Zero.Web.Api.Auth
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateLifetime = true,//过期时间
+                    ValidateIssuerSigningKey = true,//是否验证SecurityKey
+                    IssuerSigningKey = new SymmetricSecurityKey(key),//拿到SecurityKey
+                    ValidateIssuer = false,//是否验证Issuer
+                    ValidateAudience = false//是否验证Audience
+                     
                 };
             });
         }
@@ -55,9 +57,11 @@ namespace Zero.Web.Api.Auth
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = claimsIdentity,
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.Now.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+
+
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }

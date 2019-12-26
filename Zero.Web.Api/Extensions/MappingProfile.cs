@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Zero.Core.Entities;
 using Zero.Infrastructure.Resources.ViewModels;
+using Zero.Infrastructure.Resources.ViewModels.Rabc;
 
 namespace Zero.Web.Api.Extensions
 {
@@ -21,6 +22,10 @@ namespace Zero.Web.Api.Extensions
 
             //用户
             CreateMap<SysUserCreateOrUpdateViewModel, Sys_User>();
+
+            //菜单
+
+            CreateMap<SysMenuCreateOrUpdateViewModel, Sys_Menu>();
         }
     }
 }

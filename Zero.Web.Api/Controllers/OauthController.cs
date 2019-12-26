@@ -25,7 +25,7 @@ namespace Zero.Web.Api.Controllers
             this._appSettings = appSettings.Value;
             this._sysUserRepo = sysUserRepo;
         }
-        [HttpGet]
+        [HttpPost]
         public IActionResult Auth(string username, string password)
         {
 
