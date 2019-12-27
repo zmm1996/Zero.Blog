@@ -14,6 +14,8 @@ namespace Zero.Core.Intefaces
 
         int ExecuteBySql(string strSql);
         int ExecuteBySql(string strSql, DbParameter parameter);
+        IEnumerable<TEntity> FromSql(string sql);
+        IEnumerable<TEntity> FromSql(string sql, params object[] parameters);
         void Insert(TEntity entity);
         void Insert(List<TEntity> entities);
         void Update(TEntity entity);

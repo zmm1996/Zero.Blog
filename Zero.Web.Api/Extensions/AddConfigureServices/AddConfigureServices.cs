@@ -25,12 +25,14 @@ namespace Zero.Web.Api.Extensions.AddConfigureServices
             services.AddTransient<IValidator<SysUserCreateOrUpdateViewModel>, UserValidator>();
             services.AddTransient<IValidator<UserRoleViewModel>, UserRoleValidator>();
             services.AddTransient<IValidator<SysMenuCreateOrUpdateViewModel>, MenuValidator>();
+            services.AddTransient<IValidator<SysPermissionCreateOrUpdateViewModel>, PermissionValidator>();
             //仓储
             services.AddScoped<ISysUserRepo, SysUserRepo>();
             services.AddScoped<ISysRoleRepo, SysRoleRepo>();
             services.AddScoped<IUserRoleRepo, UserRoleRepo>();
             services.AddScoped<ISysMenuRepo, SysMenuRepo>();
-
+            services.AddScoped<ISysPermissionRepo, SysPremissionRepo>();
+            services.AddScoped<ISysRolePermissionRepo, SysRolePermissionRepo>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 

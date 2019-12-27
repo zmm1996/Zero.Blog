@@ -104,5 +104,14 @@ namespace Zero.Infrastructure.Repository
               
           
         }
+
+        public IEnumerable<TEntity> FromSql(string sql)
+        {
+           return _myContext.Set<TEntity>().FromSql(sql).ToList();
+        }
+        public IEnumerable<TEntity> FromSql(string sql,params object[] parameters)
+        {
+            return _myContext.Set<TEntity>().FromSql(sql, parameters).ToList();
+        }
     }
 }

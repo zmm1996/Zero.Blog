@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Zero.Core.Entities;
+using Zero.Core.Entities.Sys;
 
 namespace Zero.Infrastructure.DataBase
 {
@@ -38,5 +39,7 @@ namespace Zero.Infrastructure.DataBase
         public DbSet<Sys_UserRole> Sys_UserRole { get; set; }
 
 
+        //角色权限（前台展示）
+        public DbQuery<Sys_PermissionWithAssignProperty> Sys_PermissionWithAssignProperty { get; set; }
     }
 }

@@ -17,8 +17,10 @@ namespace Zero.Web.Api.Extensions
                // .ForMember(x => x.UpdateTime, opt => opt.MapFrom(src => src.LastModified));//UpdateTime来自LastTime
             CreateMap<SysUserViewModel, Sys_User>();
 
+            //角色
             CreateMap<SysRoleCreateOrUpdateViewModel, Sys_Role>();
             CreateMap<Sys_Role, SysRoleCreateOrUpdateViewModel>();
+
 
             //用户
             CreateMap<SysUserCreateOrUpdateViewModel, Sys_User>();
@@ -26,6 +28,10 @@ namespace Zero.Web.Api.Extensions
             //菜单
 
             CreateMap<SysMenuCreateOrUpdateViewModel, Sys_Menu>();
+
+            //权限
+
+            CreateMap<SysPermissionCreateOrUpdateViewModel, Sys_Permission>();
         }
     }
 }
