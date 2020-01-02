@@ -94,22 +94,23 @@ namespace Zero.Web.Api
             }).AddFluentValidation();
 
             //推荐加上
-            services.AddHsts(option =>
-            {
-                option.Preload = true;
-                option.IncludeSubDomains = true;
-                option.MaxAge = TimeSpan.FromDays(60);
-                option.ExcludedHosts.Add("example.com");
-                option.ExcludedHosts.Add("www.example.com");
+            //todo:iis无法访问
+            //services.AddHsts(option =>
+            //{
+            //    option.Preload = true;
+            //    option.IncludeSubDomains = true;
+            //    option.MaxAge = TimeSpan.FromDays(60);
+            //    option.ExcludedHosts.Add("example.com");
+            //    option.ExcludedHosts.Add("www.example.com");
 
-            });
-            //将http转为https
-            services.AddHttpsRedirection(options =>
-            {
-                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-                options.HttpsPort = 5001;
+            //});
+            ////将http转为https
+            //services.AddHttpsRedirection(options =>
+            //{
+            //    options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+            //    options.HttpsPort = 5001;
 
-            });
+            //});
 
             //swagger
             services.AddSwaggerGen(options =>
@@ -165,7 +166,8 @@ namespace Zero.Web.Api
             app.UseStaticFiles();
             //身份授权认证
             app.UseAuthentication();
-            app.UseHttpsRedirection();
+            //todo:iis无法使用
+           // app.UseHttpsRedirection();
 
             app.UseExceptionMiddleware();
 

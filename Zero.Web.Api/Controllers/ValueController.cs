@@ -40,7 +40,7 @@ namespace Zero.Web.Api.Controllers
         {
 
           
-            var result=  _sysUserRepo.FindEntity(Guid.Parse("8EB66204-8023-C1EB-6162-39F22EF35F5F"));
+          //  var result=  _sysUserRepo.FindEntity(Guid.Parse("8EB66204-8023-C1EB-6162-39F22EF35F5F"));
             //Sys_User sys_User = new Sys_User
             //{
             //    Id = NumberNo.SequentialGuid(),
@@ -56,8 +56,8 @@ namespace Zero.Web.Api.Controllers
             //}
             //return Ok("成功");
 
-           var resuleResult= _mapper.Map<Sys_User, SysUserViewModel>(result);
-            return Ok(resuleResult);
+         //  var resuleResult= _mapper.Map<Sys_User, SysUserViewModel>(result);
+            return Ok(new{name="saas" });
         }
     }
 }
