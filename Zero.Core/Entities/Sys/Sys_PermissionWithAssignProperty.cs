@@ -43,7 +43,7 @@ namespace Zero.Core.Entities.Sys
         /// <summary>
         /// 角色编码
         /// </summary>
-        public string RoleId { get; set; }
+        public Guid? RoleId { get; set; }
         /// <summary>
         /// 权限是否已分配到当前角色
         /// </summary>

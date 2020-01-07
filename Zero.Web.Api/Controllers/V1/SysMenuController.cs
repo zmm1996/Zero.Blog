@@ -157,14 +157,14 @@ namespace Zero.Web.Api.Controllers.V1
                   Title=x.Name
             }).ToList();
 
-            //var root = new MenuTree
-            //{
-            //    Title="顶级菜单",
-            //     Id=Guid.Empty,
-            //      ParentId=null
-            //};
-           // temp.Insert(0, root);
-           var tree= temp.BuildTree(id);
+            var root = new MenuTree
+            {
+                Title = "顶级菜单",
+                Id = Guid.Empty,
+                ParentId = null
+            };
+            temp.Insert(0, root);
+            var tree= temp.BuildTree(id);
 
             response.SetData(tree);
             return Ok(response);

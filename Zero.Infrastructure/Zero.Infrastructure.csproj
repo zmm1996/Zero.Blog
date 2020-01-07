@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200107085410_addmapping.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Zero.Core\Zero.Core.csproj" />
   </ItemGroup>
 

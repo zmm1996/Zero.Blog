@@ -5,6 +5,11 @@ namespace Zero.Core.Entities
 {
     public partial class Sys_Menu:BaseEntity,IBaseEntity
     {
+        public Sys_Menu()
+        {
+            Sys_Permissions = new List<Sys_Permission>();
+        }
+
       
         /// <summary>
         /// 菜单名
@@ -70,5 +75,7 @@ namespace Zero.Core.Entities
         /// 页面关闭前的回调函数
         /// </summary>
         public string BeforeCloseFun { get; set; }
+
+        public virtual List<Sys_Permission> Sys_Permissions { get; set; }
     }
 }

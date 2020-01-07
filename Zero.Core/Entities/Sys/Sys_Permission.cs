@@ -15,5 +15,6 @@ namespace Zero.Core.Entities
         public Nullable<int> IsDelete { get; set; }
         public Nullable<int> Type { get; set; }
    
+         public virtual Sys_Menu Sys_Menu { get; set; }
     }
 }

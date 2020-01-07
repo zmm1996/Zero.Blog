@@ -42,6 +42,8 @@ namespace Zero.Infrastructure.DataBase
             builder.Property(t => t.ModifiedByUserId).HasColumnName("ModifiedByUserId");
             builder.Property(t => t.ModifiedByUserName).HasColumnName("ModifiedByUserName");
 
+            builder.HasOne(per => per.Sys_Menu).WithMany(x => x.Sys_Permissions).HasForeignKey(x => x.MenuId);
+
         }
     }
 }

@@ -58,6 +58,7 @@ namespace Zero.Web.Api
             // _configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<MyContext>(options =>
             {
+                options.UseLazyLoadingProxies();//懒加载
                 options.UseSqlServer(connStr);
             });
 

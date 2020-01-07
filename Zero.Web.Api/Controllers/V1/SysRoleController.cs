@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
@@ -27,17 +28,20 @@ namespace Zero.Web.Api.Controllers.V1
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISysRolePermissionRepo _sysRolePermissionRepo;
+        private readonly ISysPermissionRepo _sysPermissionRepo;
 
         public SysRoleController(ISysRoleRepo sysRoleRepo,
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            ISysRolePermissionRepo sysRolePermissionRepo
+            ISysRolePermissionRepo sysRolePermissionRepo,
+            ISysPermissionRepo sysPermissionRepo
             )
         {
             this._sysRoleRepo = sysRoleRepo;
             this._unitOfWork = unitOfWork;
             this._mapper = mapper;
             this._sysRolePermissionRepo = sysRolePermissionRepo;
+            this._sysPermissionRepo = sysPermissionRepo;
         }
 
         [HttpGet(Name = "GetRoles")]
@@ -199,14 +203,42 @@ namespace Zero.Web.Api.Controllers.V1
 
             if (viewModel.Permissions != null && viewModel.Permissions.Count > 0)
             {
-                var repmissionList = viewModel.Permissions.Select(x => new Sys_RolePermission
+                //所有权限
+                var entityList = _sysPermissionRepo.FindList();
+
+                //筛选传递过来权限id，数据库中存在往里面添加
+                List<Sys_RolePermission> addRolePermission = new List<Sys_RolePermission>();
+
+                viewModel.Permissions.ForEach(x =>
                 {
-                    Id = NumberNo.SequentialGuid(),
-                    PermissionId = x,
-                    RoleId = viewModel.RoleId
-                }).ToList();
-                _sysRolePermissionRepo.Insert(repmissionList);
-                _unitOfWork.Save();
+                  if (entityList.Where(e => e.Id == x).Any())
+                    {
+                        addRolePermission.Add(new Sys_RolePermission
+                        {
+                            Id = NumberNo.SequentialGuid(),
+                            PermissionId = x,
+                            RoleId = viewModel.RoleId
+                        });
+                    }
+
+                });
+
+               //var repmissionList = viewModel.Permissions.Select(x => new Sys_RolePermission
+               // {
+               //     Id = NumberNo.SequentialGuid(),
+               //     PermissionId = x,
+               //     RoleId = viewModel.RoleId
+               // }).ToList();
+                _sysRolePermissionRepo.Insert(addRolePermission);
+              if (_unitOfWork.Save())
+                {
+                    response.SetSuccess();
+                }
+                else
+                {
+                    response.SetFailed();
+                }
+
             }
 
             return Ok(response);

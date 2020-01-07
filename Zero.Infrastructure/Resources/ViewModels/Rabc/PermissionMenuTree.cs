@@ -50,7 +50,7 @@ namespace Zero.Infrastructure.Resources.ViewModels.Rabc
         /// </summary>
         public bool Expand { get; set; }
         /// <summary>
-        /// 禁掉响应
+        /// 存在子节点禁用父节点
         /// </summary>
         public bool Disabled { get; set; }
         /// <summary>
@@ -69,6 +69,7 @@ namespace Zero.Infrastructure.Resources.ViewModels.Rabc
         /// 当前菜单的所有权限都已分配到指定角色
         /// </summary>
         public bool AllAssigned { get; set; }
+        
         /// <summary>
         /// 当前菜单拥有的权限功能
         /// </summary>
@@ -96,6 +97,8 @@ namespace Zero.Infrastructure.Resources.ViewModels.Rabc
         /// 是否已分配到指定角色
         /// </summary>
         public bool IsAssignedToRole { get; set; }
+
+       
     }
 
 

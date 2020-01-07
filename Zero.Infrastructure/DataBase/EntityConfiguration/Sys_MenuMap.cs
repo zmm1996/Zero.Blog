@@ -71,6 +71,8 @@ namespace Zero.Infrastructure.DataBase
             builder.Property(t => t.ModifiedTime).HasColumnName("ModifiedTime");
             builder.Property(t => t.ModifiedByUserId).HasColumnName("ModifiedByUserId");
             builder.Property(t => t.ModifiedByUserName).HasColumnName("ModifiedByUserName");
+
+
         }
     }
 }

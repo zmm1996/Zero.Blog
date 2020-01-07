@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace Zero.Web.Api.Controllers.V1
 {
     [Route("api/v1/rabc/syspermission")]
     [ApiController]
+    [Authorize]
     public class SysPermissionController : ControllerBase
     {
         private readonly ISysPermissionRepo _sysPermissionRepo;
@@ -48,7 +50,7 @@ namespace Zero.Web.Api.Controllers.V1
             var data = _sysPermissionRepo.FindList();
 
             response.SetData(data, data.Count());
-            return Ok(data);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
@@ -58,10 +60,10 @@ namespace Zero.Web.Api.Controllers.V1
             var entity = _sysPermissionRepo.FindEntity(id);
             if (entity == null)
             {
-
                 response.SetNotFound();
                 return Ok(response);
             }
+            response.SetData(entity);
 
             return Ok(response);
 
@@ -161,6 +163,8 @@ namespace Zero.Web.Api.Controllers.V1
         [HttpGet("PermissionTree")]
         public IActionResult PermissionTree(Guid id)
         {
+           var aa= _myContext.Sys_Menu.Find(new Guid("3EC6B347-6049-35E3-96DE-39F2536668DA"));
+
             var response = ResponseModelFactory.CreateInstance;
             var role = _myContext.Sys_Role.Find(id);
             if (role == null)
@@ -181,14 +185,14 @@ namespace Zero.Web.Api.Controllers.V1
 
             var sql = @"select  P.Id,P.MenuId,P.Name,P.ActionCode,R.RoleId,(case when R.PermissionId is not null then 1 else 0 end) as IsAssigned 
                           from Sys_Permission as P
-                          left join(SELECT* from Sys_RolePermission where Id={0}) R
+                          left join(SELECT* from Sys_RolePermission where RoleId={0}) R
                          on R.PermissionId = P.Id
                           where P.IsDelete = 0 and P.Status = 1";
             var permissionList = _myContext.Sys_PermissionWithAssignProperty.FromSql(sql, id).ToList();
-            var tree = menu.FillRecursive(permissionList, null, role.IsSuperAdministrator.Value);
-            response.SetData(new { tree, selectedPermissions =permissionList.Where(x=>x.IsAssigned==1).Select(x=>x.Id)});
+            var tree = menu.FillRecursive(permissionList, new Guid("00000000-0000-0000-0000-000000000000"), role.IsSuperAdministrator.Value);
+            response.SetData(new { tree, selectedPermissions = permissionList.Where(x => x.IsAssigned == 1).Select(x => x.Id), IsSuperAdministrator = role.IsSuperAdministrator,allPermisson= permissionList.Select(x=>x.Id) });
             return Ok(response);
-                
+
         }
     }
     public static class PermissionTreeHelper
@@ -207,26 +211,61 @@ namespace Zero.Web.Api.Controllers.V1
             List<PermissionMenuTree> trees = new List<PermissionMenuTree>();
             foreach (var item in menus.Where(x => x.Parentid == parentGuid))
             {
-                var childen = new PermissionMenuTree
+                var children = new PermissionMenuTree
                 {
                     id = item.id,
                     Parentid = item.Parentid,
                     Title = item.Title,
                     Expand = true,
                     AllAssigned = IsSuperAdministrator ? true : (permissions.Where(x => x.Menuid == item.id).Count(x => x.IsAssigned == 0) == 0),
-                    Permissions = permissions.Where(x => x.Menuid == item.id).Select(x => new PermissionElement
-                    {
-                        Id = x.Id,
-                        IsAssignedToRole = IsAssigned(x.IsAssigned, IsSuperAdministrator),
-                        Name = x.Name
-                    }).ToList(),
-                    Children = FillRecursive(menus, permissions, item.id)
+                    //todo:前台ui无法实现这种
+                    //Permissions = permissions.Where(x => x.Menuid == item.id).Select(x => new PermissionElement
+                    //{
+                    //    Id = x.Id,
+                    //    IsAssignedToRole = IsAssigned(x.IsAssigned, IsSuperAdministrator),
+                    //    Name = x.Name
+                    //}).ToList(),
+
+                    Children = IsChildren(menus, item.id) ? FillRecursive(menus, permissions, item.id, IsSuperAdministrator) : LoadPermisson(permissions,item.id,IsSuperAdministrator),
+                    Disabled = true//IsChildren(menus, item.id)
                 };
-                trees.Add(childen);
+                trees.Add(children);
             }
             return trees;
         }
+        /// <summary>
+        /// 把权限加到菜单上
+        /// </summary>
+        /// <param name="permissions"></param>
+        /// <param name="menuId"></param>
+        /// <param name="IsSuperAdministrator"></param>
+        /// <returns></returns>
+        private static List<PermissionMenuTree> LoadPermisson(List<Sys_PermissionWithAssignProperty> permissions, Guid menuId, bool IsSuperAdministrator)
+        {
 
+            var data = permissions.Where(x => x.Menuid == menuId).Select(x => new PermissionMenuTree
+            {
+                //Id = x.Id,
+                //IsAssignedToRole = IsAssigned(x.IsAssigned, IsSuperAdministrator),
+                //Name = x.Name
+                id = x.Id,
+                Title = x.Name,
+                Disabled = false,
+                Checked = IsAssigned(x.IsAssigned, IsSuperAdministrator),
+            }).ToList();
+            return data;
+        }
+
+        /// <summary>
+        /// 是否有子节点
+        /// </summary>
+        /// <param name="menus"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private static bool IsChildren(List<PermissionMenuTree> menus, Guid id)
+        {
+            return menus.Where(x => x.Parentid == id).Any();
+        }
 
         private static bool IsAssigned(int IsAssigned, bool isSuper)
         {
