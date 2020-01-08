@@ -20,7 +20,7 @@ namespace Zero.Web.Api.Controllers.V1
     [Route("api/v1/rabc/sysuser")]
     [ApiController]
     [Authorize]
-    public class SysUserController:ControllerBase
+    public class SysUserController : ControllerBase
     {
         private readonly ISysUserRepo _sysUserRepo;
         private readonly IUserRoleRepo _userRoleRepo;
@@ -44,14 +44,14 @@ namespace Zero.Web.Api.Controllers.V1
         /// 用户集合
         /// </summary>
         /// <returns></returns>
-        [HttpGet(Name ="GetAll")]
+        [HttpGet(Name = "GetAll")]
         [ActionLog("获取用户集合")]
         public IActionResult GetAll()
         {
-           var response= ResponseModelFactory.CreateResultInstance;
-           var data= _sysUserRepo.FindList();
+            var response = ResponseModelFactory.CreateResultInstance;
+            var data = _sysUserRepo.FindList();
             response.SetData(data, data.Count());
-            return Ok(response); 
+            return Ok(response);
         }
 
         /// <summary>
@@ -59,14 +59,14 @@ namespace Zero.Web.Api.Controllers.V1
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}",Name = "GetUserById")]
+        [HttpGet("{id}", Name = "GetUserById")]
         [ActionLog("获取单个user")]
         public IActionResult GetUserById(Guid id)
         {
-         var response= ResponseModelFactory.CreateInstance;
+            var response = ResponseModelFactory.CreateInstance;
 
-          var data=  _sysUserRepo.FindEntity(id);
-           if(data==null)
+            var data = _sysUserRepo.FindEntity(id);
+            if (data == null)
             {
                 response.SetNotFound();
             }
@@ -81,12 +81,12 @@ namespace Zero.Web.Api.Controllers.V1
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost( Name = "CreateUser")]
+        [HttpPost(Name = "CreateUser")]
         [ActionLog("创建用户")]
         public IActionResult CreateUser([FromBody] SysUserCreateOrUpdateViewModel model)
         {
             var response = ResponseModelFactory.CreateInstance;
-            var data = _sysUserRepo.FindEntity(x=>x.LoginName==model.LoginName);
+            var data = _sysUserRepo.FindEntity(x => x.LoginName == model.LoginName);
 
             if (data != null)
             {
@@ -99,9 +99,9 @@ namespace Zero.Web.Api.Controllers.V1
             //    return Ok(response);
             //}
             Sys_User adduser = new Sys_User();
-            
+
             _mapper.Map(model, adduser);
-           // adduser.Password = CrypToHelper.HashPassword(model.Password);
+            // adduser.Password = CrypToHelper.HashPassword(model.Password);
             adduser.Create();
 
             _sysUserRepo.Insert(adduser);
@@ -120,29 +120,29 @@ namespace Zero.Web.Api.Controllers.V1
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPut("{id}",Name ="UpdateUser")]
+        [HttpPut("{id}", Name = "UpdateUser")]
         [ActionLog("更新用户")]
-        public IActionResult UpdateUser(Guid id,[FromBody] SysUserCreateOrUpdateViewModel model)
+        public IActionResult UpdateUser(Guid id, [FromBody] SysUserCreateOrUpdateViewModel model)
         {
-           var response= ResponseModelFactory.CreateInstance;
-           var sysUser= _sysUserRepo.FindEntity(id);
+            var response = ResponseModelFactory.CreateInstance;
+            var sysUser = _sysUserRepo.FindEntity(id);
 
-            if(sysUser==null)
+            if (sysUser == null)
             {
                 response.SetNotFound();
                 return Ok(response);
             }
-            if(sysUser.UserType==0&& !AuthContextService.IsAdministrator)
+            if (sysUser.UserType == 0 && !AuthContextService.IsAdministrator)
             {
                 response.SetFailed("权限不足");
                 return Ok(response);
             }
             _mapper.Map(model, sysUser);
-          //  sysUser.Password =model.Password== sysUser.Password?sysUser.Password:CrypToHelper.HashPassword(model.Password);
+            //  sysUser.Password =model.Password== sysUser.Password?sysUser.Password:CrypToHelper.HashPassword(model.Password);
             sysUser.Update();
 
             _sysUserRepo.Update(sysUser);
-            if(!_unitOfWork.Save())
+            if (!_unitOfWork.Save())
             {
                 response.SetFailed("更新失败");
                 return Ok(response);
@@ -161,25 +161,25 @@ namespace Zero.Web.Api.Controllers.V1
         public IActionResult DeleteUser(Guid id)
         {
             var response = ResponseModelFactory.CreateInstance;
-            var data= _sysUserRepo.FindEntity(id);
-            if(data==null)
+            var data = _sysUserRepo.FindEntity(id);
+            if (data == null)
             {
                 response.SetNotFound();
                 return Ok(response);
             }
 
-            if(data.UserType==0)
+            if (data.UserType == 0)
             {
                 response.SetFailed("超级管理不允许删除!");
                 return Ok(response);
             }
 
-            data.IsDeleted =(int) CommonEnum.IsDeleted.Yes;
+            data.IsDeleted = (int)CommonEnum.IsDeleted.Yes;
 
             data.Update();
 
             _sysUserRepo.Update(data);
-            if(!_unitOfWork.Save())
+            if (!_unitOfWork.Save())
             {
                 response.SetFailed("删除失败");
                 return Ok(response);
@@ -192,33 +192,37 @@ namespace Zero.Web.Api.Controllers.V1
 
         #region 用户角色
 
-      
+
         /// <summary>
         /// 分配角色
         /// </summary>
         /// <param name="viewModel"></param>
         /// <returns></returns>
-        [HttpPost("SaveRoles",Name = "SaveRoles")]
+        [HttpPost("SaveRoles", Name = "SaveRoles")]
         [ActionLog("用户分配角色")]
         public IActionResult SaveRoles([FromBody]UserRoleViewModel viewModel)
         {
             var response = ResponseModelFactory.CreateInstance;
 
-          var roles=  viewModel.RoleIds.Select(x => new Sys_UserRole
+            var roles = viewModel.RoleIds.Select(x => new Sys_UserRole
             {
-                 Id=NumberNo.SequentialGuid(),
-                  UserId=viewModel.UserId,
-                   RoleId=x
+                Id = NumberNo.SequentialGuid(),
+                UserId = viewModel.UserId,
+                RoleId = x
             }).ToList();
 
             _userRoleRepo.ExecuteBySql($"delete from Sys_UserRole where UserId ='{viewModel.UserId}'");
-            _userRoleRepo.Insert(roles);
 
-           if(!_unitOfWork.Save())
+            if (roles.Any())
             {
-                response.SetFailed();
-                return Ok(response);
+                _userRoleRepo.Insert(roles);
+                if (!_unitOfWork.Save())
+                {
+                    response.SetFailed();
+                    return Ok(response);
+                }
             }
+
             return Ok(response);
 
         }

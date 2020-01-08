@@ -261,8 +261,68 @@ namespace Zero.Web.Api.Controllers.V1
   ON R.Id=SR.RoleId
   WHERE SR.UserId= {0}";
             var query = _sysRoleRepo.FromSql(sql, userid);
-            var assignedRoles = query.Select(x => x.Name);
+            var assignedRoles = query.Select(x =>new {
+                key=x.Id,
+                label=x.Name
+            });
             return Ok(assignedRoles);
+        }
+
+        /// <summary>
+        /// 获取用户已分配和未分配角色
+        /// </summary>
+        /// <param name="userId">用户id</param>
+        /// <returns></returns>
+        [HttpGet("GetRolesHaveAndNot/{userId}")]
+        public IActionResult GetRolesHaveAndNot(Guid userId)
+        {
+            var responce = ResponseModelFactory.CreateInstance;
+
+            //已分配
+            string sql = @"SELECT   r.*
+  FROM[Zero].[dbo].[Sys_Role] AS R
+  inner join[Zero].[dbo].[Sys_UserRole]
+        AS SR
+  ON R.Id=SR.RoleId
+  WHERE SR.UserId= {0}";
+            var query = _sysRoleRepo.FromSql(sql, userId);
+            var assignedRoles = query.Select(x =>x.Id).ToList();
+
+            var rolelist = _sysRoleRepo.FindList().Select(x => new {
+                key = x.Id,
+                label = x.Name,
+            }).ToList(); 
+
+           // var all = new List<dynamic>();
+
+            //求差集，
+            //rolelist.ForEach(x =>
+            //{
+            //    bool isExist = false;
+            //    assignedRoles.ForEach(a =>
+            //    {
+            //        if(x.key==a.key)
+            //        {
+            //            isExist = true;
+            //            return;
+            //        }
+            //    });
+
+            //    if (!isExist)
+            //    {
+            //        all.Add(x);
+                    
+            //    }
+
+            //});
+
+            var result = new
+            {
+                rolelist,
+                assignedRoles
+            };
+            responce.SetData(result);
+            return Ok(responce);
         }
     }
 }

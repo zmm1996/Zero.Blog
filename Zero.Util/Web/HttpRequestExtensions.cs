@@ -35,7 +35,7 @@ namespace Zero.Util.Web
             var ip = context.Request.Headers["X-Forwarded-For"];
             if (string.IsNullOrEmpty(ip))
             {
-                ip = context.Connection.LocalIpAddress.ToString();
+                ip = context.Connection.RemoteIpAddress.ToString();//.LocalIpAddress.ToString();
             }
             return ip;
         }
