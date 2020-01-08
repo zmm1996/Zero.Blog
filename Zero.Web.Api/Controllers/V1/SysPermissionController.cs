@@ -47,7 +47,17 @@ namespace Zero.Web.Api.Controllers.V1
             var response = ResponseModelFactory.CreateResultInstance;
 
 
-            var data = _sysPermissionRepo.FindList();
+            var data = _sysPermissionRepo.IQueryable().Select(x => new
+            {
+                id = x.Id,
+                name = x.Name,
+                actionCode = x.ActionCode,
+                createdByUserName = x.CreatedByUserName,
+                menuId = x.Sys_Menu.Name,
+                status = x.Status,
+                type = x.Type,
+                createdTime = x.CreatedTime,
+            }).ToList();
 
             response.SetData(data, data.Count());
             return Ok(response);
@@ -57,14 +67,15 @@ namespace Zero.Web.Api.Controllers.V1
         public IActionResult GetPermissionById(Guid id)
         {
             var response = ResponseModelFactory.CreateInstance;
-            var entity = _sysPermissionRepo.FindEntity(id);
-            if (entity == null)
-            {
-                response.SetNotFound();
-                return Ok(response);
-            }
-            response.SetData(entity);
-
+            
+                var entity = _sysPermissionRepo.FindEntity(id);
+                if (entity == null)
+                {
+                    response.SetNotFound();
+                    return Ok(response);
+                }
+                response.SetData(entity);
+            throw new Exception("saaa");
             return Ok(response);
 
         }
@@ -163,7 +174,7 @@ namespace Zero.Web.Api.Controllers.V1
         [HttpGet("PermissionTree")]
         public IActionResult PermissionTree(Guid id)
         {
-           var aa= _myContext.Sys_Menu.Find(new Guid("3EC6B347-6049-35E3-96DE-39F2536668DA"));
+            //var aa= _myContext.Sys_Menu.Find(new Guid("3EC6B347-6049-35E3-96DE-39F2536668DA"));
 
             var response = ResponseModelFactory.CreateInstance;
             var role = _myContext.Sys_Role.Find(id);
@@ -190,7 +201,7 @@ namespace Zero.Web.Api.Controllers.V1
                           where P.IsDelete = 0 and P.Status = 1";
             var permissionList = _myContext.Sys_PermissionWithAssignProperty.FromSql(sql, id).ToList();
             var tree = menu.FillRecursive(permissionList, new Guid("00000000-0000-0000-0000-000000000000"), role.IsSuperAdministrator.Value);
-            response.SetData(new { tree, selectedPermissions = permissionList.Where(x => x.IsAssigned == 1).Select(x => x.Id), IsSuperAdministrator = role.IsSuperAdministrator,allPermisson= permissionList.Select(x=>x.Id) });
+            response.SetData(new { tree, selectedPermissions = permissionList.Where(x => x.IsAssigned == 1).Select(x => x.Id), IsSuperAdministrator = role.IsSuperAdministrator, allPermisson = permissionList.Select(x => x.Id) });
             return Ok(response);
 
         }
@@ -226,7 +237,7 @@ namespace Zero.Web.Api.Controllers.V1
                     //    Name = x.Name
                     //}).ToList(),
 
-                    Children = IsChildren(menus, item.id) ? FillRecursive(menus, permissions, item.id, IsSuperAdministrator) : LoadPermisson(permissions,item.id,IsSuperAdministrator),
+                    Children = IsChildren(menus, item.id) ? FillRecursive(menus, permissions, item.id, IsSuperAdministrator) : LoadPermisson(permissions, item.id, IsSuperAdministrator),
                     Disabled = true//IsChildren(menus, item.id)
                 };
                 trees.Add(children);

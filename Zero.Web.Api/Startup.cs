@@ -58,7 +58,7 @@ namespace Zero.Web.Api
             // _configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<MyContext>(options =>
             {
-                options.UseLazyLoadingProxies();//懒加载
+              //  options.UseLazyLoadingProxies();//懒加载
                 options.UseSqlServer(connStr);
             });
 
@@ -92,6 +92,9 @@ namespace Zero.Web.Api
                 //返回json格式
                 options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 options.SerializerSettings.DateFormatString = "yyy-MM-dd HH:mm:ss";//解决返回时间带t
+
+                //ef添加导航属性之后，返回值会无限循环引用
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             }).AddFluentValidation();
 
             //推荐加上
