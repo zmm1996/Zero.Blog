@@ -33,6 +33,7 @@ namespace Zero.Web.Api.Extensions.AddConfigureServices
             services.AddScoped<ISysMenuRepo, SysMenuRepo>();
             services.AddScoped<ISysPermissionRepo, SysPremissionRepo>();
             services.AddScoped<ISysRolePermissionRepo, SysRolePermissionRepo>();
+            services.AddScoped<ISysUserActionLogRepo, SysUserActionLogRepo>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
