@@ -12,12 +12,13 @@ using Zero.Infrastructure.Resources.ViewModels.Rabc;
 using Zero.Util.Helpers;
 using Zero.Web.Api.Extensions;
 using Zero.Web.Api.Filters;
+using Zero.Web.Util.Extensions.AuthContext;
 
 namespace Zero.Web.Api.Controllers.V1
 {
     [Route("api/v1/rabc/sysmenu")]
     [ApiController]
-    [Authorize]
+    [CustomAuthorization]
     public class SysMenuController : ControllerBase
     {
         private readonly ISysMenuRepo _sysMenuRepo;
@@ -135,26 +136,27 @@ namespace Zero.Web.Api.Controllers.V1
 
             _sysMenuRepo.Update(data);
 
-            if(!_unitOfWork.Save())
+            if (!_unitOfWork.Save())
             {
                 response.SetFailed();
                 return Ok(response);
             }
-          
+
             return Ok(response);
 
 
         }
 
-        
+
         [HttpGet("MenuTree")]
         public IActionResult MenuTree(Guid? id)
         {
-           var response= ResponseModelFactory.CreateInstance;
-            var temp=  _sysMenuRepo.FindList().Select(x=>new MenuTree {
-                 Id=x.Id,
-                  ParentId=x.ParentId,
-                  Title=x.Name
+            var response = ResponseModelFactory.CreateInstance;
+            var temp = _sysMenuRepo.FindList().Select(x => new MenuTree
+            {
+                Id = x.Id,
+                ParentId = x.ParentId,
+                Title = x.Name
             }).ToList();
 
             var root = new MenuTree
@@ -164,16 +166,51 @@ namespace Zero.Web.Api.Controllers.V1
                 ParentId = null
             };
             temp.Insert(0, root);
-            var tree= temp.BuildTree(id);
+            var tree = temp.BuildTree(id);
 
             response.SetData(tree);
             return Ok(response);
 
         }
 
-       
+        /// <summary>
+        /// 用户所属菜单
+        /// </summary>
+        /// <param name="id">用户</param>
+        /// <returns></returns>
+        [HttpGet("MenuTreeByUserId")]
+        public IActionResult MenuTreeByUserId()
+        {
 
-      
+            //系统中所有菜单
+            var menus = _sysMenuRepo.IQueryable(x => x.IsDeleted == 0 && x.Status == 1).OrderBy(x => x.Sort).Select(x => _mapper.Map<InitMenuTree>(x)).ToList();
+
+            List<InitMenuTree> haveMenu = new List<InitMenuTree>();
+            if (AuthContextService.IsAdministrator)
+            {
+                 haveMenu = menus.UpBuildTree(null,true);
+                return Ok(haveMenu);
+            }
+            string sql = string.Format(@"select DIStinct M.*from [dbo].[Sys_UserRole]  AS U
+	INNER JOIN 
+	[dbo].[Sys_RolePermission]  AS RP
+	ON U.RoleId=RP.RoleId
+	INNER JOIN [dbo].[Sys_Permission] P
+	ON P.Id=RP.PermissionId
+      INNER JOIN [dbo].[Sys_Menu] AS M
+	  ON M.Id=P.MenuId
+where U.UserId='{0}'", AuthContextService.CurrentUser.Guid);
+            //最低级菜单
+            var menuChuildren = _sysMenuRepo.FromSql(sql).Select(x => _mapper.Map<InitMenuTree>(x)).ToList();
+           
+            //已有菜单
+             haveMenu = menus.UpBuildTree(menuChuildren,false);
+
+
+            return Ok(haveMenu);
+        }
+
+
 
 
     }

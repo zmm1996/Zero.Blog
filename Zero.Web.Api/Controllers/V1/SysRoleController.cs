@@ -21,7 +21,8 @@ namespace Zero.Web.Api.Controllers.V1
 {
     [Route("api/v1/rabc/sysrole")]
     [ApiController]
-    [Authorize]
+    // [Authorize]
+    [CustomAuthorization]
     public class SysRoleController : ControllerBase
     {
         private readonly ISysRoleRepo _sysRoleRepo;
@@ -206,12 +207,12 @@ namespace Zero.Web.Api.Controllers.V1
                 //所有权限
                 var entityList = _sysPermissionRepo.FindList();
 
-                //筛选传递过来权限id，数据库中存在往里面添加
+                //筛选传递过来权限id，数据库中存在往里面添加，因为会把选中的上级也传过来
                 List<Sys_RolePermission> addRolePermission = new List<Sys_RolePermission>();
 
                 viewModel.Permissions.ForEach(x =>
                 {
-                  if (entityList.Where(e => e.Id == x).Any())
+                    if (entityList.Where(e => e.Id == x).Any())
                     {
                         addRolePermission.Add(new Sys_RolePermission
                         {
@@ -223,12 +224,13 @@ namespace Zero.Web.Api.Controllers.V1
 
                 });
 
-               //var repmissionList = viewModel.Permissions.Select(x => new Sys_RolePermission
-               // {
-               //     Id = NumberNo.SequentialGuid(),
-               //     PermissionId = x,
-               //     RoleId = viewModel.RoleId
-               // }).ToList();
+                //上级也添加
+                //var repmissionList = viewModel.Permissions.Select(x => new Sys_RolePermission
+                //{
+                //    Id = NumberNo.SequentialGuid(),
+                //    PermissionId = x,
+                //    RoleId = viewModel.RoleId
+                //}).ToList();
                 _sysRolePermissionRepo.Insert(addRolePermission);
               if (_unitOfWork.Save())
                 {

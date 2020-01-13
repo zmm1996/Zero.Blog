@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 using Zero.Core.Entities;
 using Zero.Core.Intefaces.Sys;
 using Zero.Web.Api.Extensions;
+using Zero.Web.Api.Filters;
 
 namespace Zero.Web.Api.Controllers.V1
 {
     [Route("api/v1/rabc/sysuserlog")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
+    [CustomAuthorization]
     public class SysUserLogController: ControllerBase
     {
         private readonly ISysUserActionLogRepo _sysUserActionLogRepo;

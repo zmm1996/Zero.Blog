@@ -19,7 +19,8 @@ namespace Zero.Web.Api.Controllers.V1
 
     [Route("api/v1/rabc/sysuser")]
     [ApiController]
-    [Authorize]
+    // [Authorize]
+    [CustomAuthorization]
     public class SysUserController : ControllerBase
     {
         private readonly ISysUserRepo _sysUserRepo;

@@ -15,13 +15,14 @@ using Zero.Infrastructure.DataBase;
 using Zero.Infrastructure.Resources.ViewModels.Rabc;
 using Zero.Util.Helpers;
 using Zero.Web.Api.Extensions;
+using Zero.Web.Api.Filters;
 using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
 
 namespace Zero.Web.Api.Controllers.V1
 {
     [Route("api/v1/rabc/syspermission")]
     [ApiController]
-    [Authorize]
+    [CustomAuthorization]
     public class SysPermissionController : ControllerBase
     {
         private readonly ISysPermissionRepo _sysPermissionRepo;
@@ -75,7 +76,6 @@ namespace Zero.Web.Api.Controllers.V1
                     return Ok(response);
                 }
                 response.SetData(entity);
-            throw new Exception("saaa");
             return Ok(response);
 
         }
@@ -222,6 +222,8 @@ namespace Zero.Web.Api.Controllers.V1
             List<PermissionMenuTree> trees = new List<PermissionMenuTree>();
             foreach (var item in menus.Where(x => x.Parentid == parentGuid))
             {
+                var chil = LoadPermisson(permissions, item.id, IsSuperAdministrator);//当前菜单的权限
+                chil.AddRange(FillRecursive(menus, permissions, item.id, IsSuperAdministrator));//子菜单
                 var children = new PermissionMenuTree
                 {
                     id = item.id,
@@ -237,7 +239,7 @@ namespace Zero.Web.Api.Controllers.V1
                     //    Name = x.Name
                     //}).ToList(),
 
-                    Children = IsChildren(menus, item.id) ? FillRecursive(menus, permissions, item.id, IsSuperAdministrator) : LoadPermisson(permissions, item.id, IsSuperAdministrator),
+                    Children =IsChildren(menus, item.id) ? FillRecursive(menus, permissions, item.id, IsSuperAdministrator) : LoadPermisson(permissions, item.id, IsSuperAdministrator),
                     Disabled = true//IsChildren(menus, item.id)
                 };
                 trees.Add(children);

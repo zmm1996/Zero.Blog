@@ -18,5 +18,11 @@ namespace Zero.Web.Api.Auth
         /// 应用密钥(真实项目中可能区分应用,不同的应用对应惟一的密钥)
         /// </summary>
         public string Secret { get; set; }
+
+        /// <summary>
+        /// 是否只允许管理员修改
+        /// </summary>
+        public bool AdministratorAction { get; set; }
+
     }
 }

@@ -28,6 +28,7 @@ namespace Zero.Web.Api.Extensions
             //菜单
 
             CreateMap<SysMenuCreateOrUpdateViewModel, Sys_Menu>();
+            CreateMap<Sys_Menu, InitMenuTree>();
 
             //权限
 
