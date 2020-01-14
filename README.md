@@ -6,6 +6,7 @@
  ### jwt认证
  ### fluentvalidator验证
  ### 仓储+工作单元
-  ### swagger
-  ### autoMapper
-  ### S
+ ### swagger
+ ### autoMapper
+ ### SeriLog
+
