@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /Zero.Web.Api/appsettings.Production.json
+/Zero.Web.Api/logs
